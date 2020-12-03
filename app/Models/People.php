@@ -13,4 +13,9 @@ class People extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = ['name'];
+
+    public function scopeItems($model)
+    {
+        return $model->select('id', 'name')->get();
+    }
 }

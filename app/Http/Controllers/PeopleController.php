@@ -2,42 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DestroyResource;
 use App\Models\People;
 use Illuminate\Http\Request;
+use App\Http\Resources\PeopleResource;
+use App\Http\Resources\PeopleCollectionResource;
+use stdClass;
 
 class PeopleController extends Controller
 {
     public function index()
     {
-        return response()->json(People::all());
+        return new PeopleCollectionResource(People::items());
     }
 
     public function store(Request $request)
     {
         $model = new People($request->all());
-        $model->save();
-        return response()->json($model);
+        if ($model->save()) {
+            return (new PeopleResource($model))
+                ->response()
+                ->setStatusCode(201);
+        }
     }
 
     public function show($id)
     {
-        $model = People::find($id);
-        return response()->json($model);
+        if (is_numeric($id)) {
+            $model = People::find($id);
+            if ($model) {
+                return (new PeopleResource($model))
+                    ->response()
+                    ->setStatusCode(200);
+            }
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $model = People::find($id);
-        $model->fill($request->all());
-        $model->save();
-        return response()->json($model);
+        if (is_numeric($id)) {
+            $model = People::find($id);
+            if ($model) {
+                $model->fill($request->all());
+                $model->save();
+                return (new PeopleResource($model))
+                    ->response()
+                    ->setStatusCode(201);
+            }
+        }
     }
 
     public function destroy($id)
     {
-        $model = People::find($id);
-        if ($model) {
-            return response()->json(['deleted' => $model->delete()]);
+        if (is_numeric($id)) {
+            $model = People::find($id);
+            if ($model) {
+                $result = new stdClass;
+                $result->deleted = $model->delete();
+                $result->found = !is_null($model);
+                return new DestroyResource($result);
+            }
         }
     }
 }
