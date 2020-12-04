@@ -11,6 +11,32 @@ class LoginController extends Controller
 {
     private $nameToken = 'admin';
 
+    /**
+     * @OA\Schema(
+     *   schema="Login",
+     *   @OA\Property(
+     *     property="email",
+     *     type="string"
+     *   ),
+     *   @OA\Property(
+     *     property="password",
+     *     type="string"
+     *   )
+     * )
+     */
+
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     @OA\Response(response="200", description="Login User"),
+     *     tags={"Authentication"},
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/Login")
+     *      )
+     *     ),
+     * )
+     */
     public function index(Request $request)
     {
         $email = $request->get('email');
