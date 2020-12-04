@@ -41,10 +41,19 @@
                 "tags": [
                     "People"
                 ],
+                "summary": "List Of People",
+                "description": "List Of People",
                 "operationId": "getProjectsList",
                 "responses": {
                     "200": {
-                        "description": "List of People"
+                        "description": "List of People",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PeopleList"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -57,6 +66,8 @@
                 "tags": [
                     "People"
                 ],
+                "summary": "Create People",
+                "description": "Create People",
                 "operationId": "App\\Http\\Controllers\\PeopleController::store",
                 "requestBody": {
                     "required": true,
@@ -70,7 +81,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Successful operation",
+                        "description": "Create People",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -92,6 +103,8 @@
                 "tags": [
                     "People"
                 ],
+                "summary": "Show People By Id",
+                "description": "Show People By Id",
                 "operationId": "App\\Http\\Controllers\\PeopleController::show",
                 "parameters": [
                     {
@@ -106,7 +119,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Show People By id",
+                        "description": "Show People By Id",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -126,6 +139,8 @@
                 "tags": [
                     "People"
                 ],
+                "summary": "Update People",
+                "description": "Update People",
                 "operationId": "App\\Http\\Controllers\\PeopleController::update",
                 "parameters": [
                     {
@@ -170,6 +185,8 @@
                 "tags": [
                     "People"
                 ],
+                "summary": "Delete People By Id",
+                "description": "Delete People By Id",
                 "operationId": "App\\Http\\Controllers\\PeopleController::destroy",
                 "parameters": [
                     {
@@ -184,7 +201,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Delete People By id",
+                        "description": "Delete People By Id",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -241,6 +258,25 @@
                     },
                     "name": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PeopleList": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"

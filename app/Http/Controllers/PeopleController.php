@@ -39,10 +39,30 @@ class PeopleController extends Controller
      */
 
     /**
+     * @OA\Schema(
+     *   schema="PeopleList",
+     *   @OA\Property(
+     *       property="data",
+     *       type="array",
+     *       @OA\Items(
+     *           @OA\Property(property="id", type="integer"),
+     *           @OA\Property(property="name", type="string")
+     *       )
+     *    )
+     * )
+     */
+
+    /**
      * @OA\Get(
      *     path="/api/people",
-     *     @OA\Response(response="200", description="List of People"),
+     *     @OA\Response(
+     *          response="200",
+     *          description="List of People",
+     *          @OA\JsonContent(ref="#/components/schemas/PeopleList")
+     *     ),
      *     tags={"People"},
+     *     description = "List Of People",
+     *     summary="List Of People",
      *     operationId="getProjectsList",
      *     security={{"apiAuth":{}}}
      * )
@@ -57,10 +77,12 @@ class PeopleController extends Controller
      *     path="/api/people/{id}",
      *     @OA\Response(
      *          response="200",
-     *          description="Show People By id",
+     *          description="Show People By Id",
      *          @OA\JsonContent(ref="#/components/schemas/PeopleUpdate")
      *     ),
      *     tags={"People"},
+     *     description = "Show People By Id",
+     *     summary="Show People By Id",
      *     security={{"apiAuth":{}}},
      *     @OA\Parameter(
      *          name="id",
@@ -90,13 +112,15 @@ class PeopleController extends Controller
      *     path="/api/people",
      *     tags={"People"},
      *     security={{"apiAuth":{}}},
+     *     description = "Create People",
+     *     summary="Create People",
      *     @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/PeopleCreate")
      *     ),
      *     @OA\Response(
      *          response=201,
-     *          description="Successful operation",
+     *          description="Create People",
      *          @OA\JsonContent(ref="#/components/schemas/PeopleUpdate")
      *       ),
      *  ),
@@ -120,6 +144,8 @@ class PeopleController extends Controller
     /**
      * @OA\Put(
      *     path="/api/people/{id}",
+     *     description = "Update People",
+     *     summary="Update People",
      *     @OA\Response(
      *          response="200",
      *          description="Update People",
@@ -165,9 +191,11 @@ class PeopleController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/people/{id}",
+     *     description = "Delete People By Id",
+     *     summary="Delete People By Id",
      *     @OA\Response(
      *          response="200",
-     *          description="Delete People By id",
+     *          description="Delete People By Id",
      *          @OA\JsonContent(ref="#/components/schemas/DestroyResource")
      *     ),
      *     tags={"People"},
