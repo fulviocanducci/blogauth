@@ -4,29 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\DestroyResource;
 use App\Models\People;
-use Illuminate\Http\Request;
 use App\Http\Resources\PeopleResource;
 use App\Http\Resources\PeopleCollectionResource;
 use App\Traits\ValidationMake;
+use Illuminate\Http\Request;
 use stdClass;
 
 class PeopleController extends Controller
 {
     use ValidationMake;
 
-    /**
-     * @OA\Schema(
-     *   schema="PeopleCreate",
-     *   @OA\Property(
-     *     property="name",
-     *     type="string"
-     *   )
-     * )
-     */
+    private $rules = [
+        'id' => 'required|numeric',
+        'name' => 'required|min:3'
+    ];
 
     /**
      * @OA\Schema(
-     *   schema="PeopleUpdate",
+     *   schema="people",
      *   @OA\Property(
      *     property="id",
      *     type="integer"
@@ -40,7 +35,7 @@ class PeopleController extends Controller
 
     /**
      * @OA\Schema(
-     *   schema="PeopleList",
+     *   schema="peoples",
      *   @OA\Property(
      *       property="data",
      *       type="array",
@@ -58,7 +53,7 @@ class PeopleController extends Controller
      *     @OA\Response(
      *          response="200",
      *          description="List of People",
-     *          @OA\JsonContent(ref="#/components/schemas/PeopleList")
+     *          @OA\JsonContent(ref="#/components/schemas/peoples")
      *     ),
      *     tags={"People"},
      *     description = "List Of People",
@@ -78,7 +73,7 @@ class PeopleController extends Controller
      *     @OA\Response(
      *          response="200",
      *          description="Show People By Id",
-     *          @OA\JsonContent(ref="#/components/schemas/PeopleUpdate")
+     *          @OA\JsonContent(ref="#/components/schemas/people")
      *     ),
      *     tags={"People"},
      *     description = "Show People By Id",
@@ -105,6 +100,7 @@ class PeopleController extends Controller
                     ->setStatusCode(200);
             }
         }
+        return $this->responseNotFound();
     }
 
     /**
@@ -116,29 +112,29 @@ class PeopleController extends Controller
      *     summary="Create People",
      *     @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/PeopleCreate")
+     *          @OA\JsonContent(ref="#/components/schemas/people")
      *     ),
      *     @OA\Response(
      *          response=201,
      *          description="Create People",
-     *          @OA\JsonContent(ref="#/components/schemas/PeopleUpdate")
+     *          @OA\JsonContent(ref="#/components/schemas/people")
      *       ),
      *  ),
      * )
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $validated = $this->valid($request, ['name' => 'required']);
-        if ($validated->fails()) {
-            return $validated->errors();
+        $valid = $this->valid($request, $this->rules);
+        if ($valid->fails()) {
+            return response()->json($valid->errors(), 200);
         }
-
         $model = new People($request->all());
         if ($model->save()) {
             return (new PeopleResource($model))
                 ->response()
                 ->setStatusCode(201);
         }
+        return $this->responseInternalServerError();
     }
 
     /**
@@ -149,7 +145,7 @@ class PeopleController extends Controller
      *     @OA\Response(
      *          response="200",
      *          description="Update People",
-     *          @OA\JsonContent(ref="#/components/schemas/PeopleUpdate")
+     *          @OA\JsonContent(ref="#/components/schemas/people")
      *     ),
      *     tags={"People"},
      *     security={{"apiAuth":{}}},
@@ -164,28 +160,26 @@ class PeopleController extends Controller
      *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/PeopleUpdate")
+     *          @OA\JsonContent(ref="#/components/schemas/people")
      *      )
      *     ),
      * )
      */
     public function update(Request $request, $id)
     {
-        $validated = $this->valid($request, ['id' => 'required', 'name' => 'required']);
-        if ($validated->fails()) {
-            return $validated->errors();
+        $valid = $this->valid($request, $this->rules);
+        if ($valid->fails()) {
+            return response()->json($valid->errors(), 200);
         }
-
-        if (is_numeric($id)) {
-            $model = People::find($id);
-            if ($model) {
-                $model->fill($request->all());
-                $model->save();
-                return (new PeopleResource($model))
-                    ->response()
-                    ->setStatusCode(200);
-            }
+        $model = People::find($id);
+        if ($model) {
+            $model->fill($request->all());
+            $model->save();
+            return (new PeopleResource($model))
+                ->response()
+                ->setStatusCode(200);
         }
+        return $this->responseNotFound();
     }
 
     /**
@@ -194,9 +188,9 @@ class PeopleController extends Controller
      *     description = "Delete People By Id",
      *     summary="Delete People By Id",
      *     @OA\Response(
-     *          response="200",
+     *          response="202",
      *          description="Delete People By Id",
-     *          @OA\JsonContent(ref="#/components/schemas/DestroyResource")
+     *          @OA\JsonContent(ref="#/components/schemas/destroy")
      *     ),
      *     tags={"People"},
      *     security={{"apiAuth":{}}},
@@ -211,7 +205,7 @@ class PeopleController extends Controller
      *      ),
      * )
      */
-    public function destroy($id)
+    public function delete($id)
     {
         if (is_numeric($id)) {
             $model = People::find($id);
@@ -219,8 +213,11 @@ class PeopleController extends Controller
                 $result = new stdClass;
                 $result->deleted = $model->delete();
                 $result->found = !is_null($model);
-                return new DestroyResource($result);
+                return (new DestroyResource($result))
+                    ->response()
+                    ->setStatusCode(202);
             }
+            return $this->responseNotFound();
         }
     }
 }

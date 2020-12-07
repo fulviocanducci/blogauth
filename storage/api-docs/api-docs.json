@@ -24,7 +24,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Login"
+                                "$ref": "#/components/schemas/login"
                             }
                         }
                     }
@@ -50,7 +50,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PeopleList"
+                                    "$ref": "#/components/schemas/peoples"
                                 }
                             }
                         }
@@ -68,13 +68,13 @@
                 ],
                 "summary": "Create People",
                 "description": "Create People",
-                "operationId": "App\\Http\\Controllers\\PeopleController::store",
+                "operationId": "App\\Http\\Controllers\\PeopleController::create",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PeopleCreate"
+                                "$ref": "#/components/schemas/people"
                             }
                         }
                     }
@@ -85,7 +85,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PeopleUpdate"
+                                    "$ref": "#/components/schemas/people"
                                 }
                             }
                         }
@@ -123,7 +123,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PeopleUpdate"
+                                    "$ref": "#/components/schemas/people"
                                 }
                             }
                         }
@@ -158,7 +158,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PeopleUpdate"
+                                "$ref": "#/components/schemas/people"
                             }
                         }
                     }
@@ -169,7 +169,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PeopleUpdate"
+                                    "$ref": "#/components/schemas/people"
                                 }
                             }
                         }
@@ -187,7 +187,7 @@
                 ],
                 "summary": "Delete People By Id",
                 "description": "Delete People By Id",
-                "operationId": "App\\Http\\Controllers\\PeopleController::destroy",
+                "operationId": "App\\Http\\Controllers\\PeopleController::delete",
                 "parameters": [
                     {
                         "name": "id",
@@ -200,12 +200,12 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "202": {
                         "description": "Delete People By Id",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/DestroyResource"
+                                    "$ref": "#/components/schemas/destroy"
                                 }
                             }
                         }
@@ -221,7 +221,7 @@
     },
     "components": {
         "schemas": {
-            "DestroyResource": {
+            "destroy": {
                 "properties": {
                     "found": {
                         "type": "boolean"
@@ -232,7 +232,7 @@
                 },
                 "type": "object"
             },
-            "Login": {
+            "login": {
                 "properties": {
                     "email": {
                         "type": "string"
@@ -243,15 +243,7 @@
                 },
                 "type": "object"
             },
-            "PeopleCreate": {
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "PeopleUpdate": {
+            "people": {
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -262,7 +254,7 @@
                 },
                 "type": "object"
             },
-            "PeopleList": {
+            "peoples": {
                 "properties": {
                     "data": {
                         "type": "array",

@@ -10,6 +10,9 @@ use Illuminate\Routing\Controller as BaseController;
 //https://github.com/zircote/swagger-php/issues/473
 //https://quickadminpanel.com/blog/laravel-api-documentation-with-openapiswagger/
 //https://github.com/zircote/swagger-php/blob/master/Examples/swagger-spec/petstore-simple/SimplePetsController.php
+//https://blog.pusher.com/build-rest-api-laravel-api-resources/
+//https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -48,7 +51,7 @@ class Controller extends BaseController
 
     /**
      * @OA\Schema(
-     *   schema="DestroyResource",
+     *   schema="destroy",
      *   @OA\Property(
      *     property="found",
      *     type="boolean"
@@ -59,4 +62,14 @@ class Controller extends BaseController
      *   )
      * )
      */
+
+    public function responseNotFound()
+    {
+        return response()->json(['message' => 'Not Found'], 404);
+    }
+
+    public function responseInternalServerError()
+    {
+        return response()->json(['message' => 'Internal Server Error'], 500);
+    }
 }

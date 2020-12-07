@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\LoginController;
 use \App\Http\Controllers\PeopleController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,5 +26,9 @@ Route::middleware([])->group(function () {
 
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::resource('people', PeopleController::class)->except(['create', 'edit']);
+    Route::get('people', [PeopleController::class, 'index']);
+    Route::post('people', [PeopleController::class, 'create']);
+    Route::get('people/{id}', [PeopleController::class, 'show'])->where('id', '[0-9]+');
+    Route::put('people/{id}', [PeopleController::class, 'update'])->where('id', '[0-9]+');;
+    Route::delete('people/{id}', [PeopleController::class, 'delete'])->where('id', '[0-9]+');;
 });

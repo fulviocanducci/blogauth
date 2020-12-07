@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use App\Traits\ValidationMake;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use stdClass;
 
 class LoginController extends Controller
 {
+    use ValidationMake;
     private $nameToken = 'admin';
+    private $rules = [
+        'email' => 'required|email:rfc,dns',
+        'password' => 'required|min:3'
+    ];
 
     /**
      * @OA\Schema(
-     *   schema="Login",
+     *   schema="login",
      *   @OA\Property(
      *     property="email",
      *     type="string"
@@ -32,17 +39,21 @@ class LoginController extends Controller
      *     tags={"Authentication"},
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/Login")
+     *          @OA\JsonContent(ref="#/components/schemas/login")
      *      )
      *     ),
      * )
      */
     public function index(Request $request)
     {
+        $valid = $this->valid($request, $this->rules);
+        if ($valid->fails()) {
+            return response()->json($valid->errors(), 200);
+        }
         $email = $request->get('email');
         $password = $request->get('password');
         $user = User::where('email', $email)->first();
-        if ($this->valid($user, $password)) {
+        if ($this->isValid($user, $password)) {
             $accessToken = $user->createToken($this->nameToken)->accessToken;
             return response()
                 ->json($this->token($accessToken));
@@ -50,7 +61,7 @@ class LoginController extends Controller
         return response('User invalid', 404);
     }
 
-    protected function valid($user, $password)
+    protected function isValid($user, $password)
     {
         return $user && Hash::check($password, $user->password);
     }
