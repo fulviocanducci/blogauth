@@ -219,5 +219,6 @@ class PeopleController extends Controller
             }
             return $this->responseNotFound();
         }
+        return $this->responseInternalServerError();
     }
 }
